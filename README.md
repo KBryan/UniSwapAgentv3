@@ -1,4 +1,4 @@
-# WizAPIPy
+# WizAIPy
 
 <img width="754" height="763" alt="wizaipi" src="https://github.com/user-attachments/assets/0ab049e8-6370-4048-8c7a-897c3e381871" />
 
