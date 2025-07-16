@@ -1,4 +1,7 @@
-# NFT-Gated AI Trading Bot
+# WizAPIPy
+
+<img width="754" height="763" alt="wizaipi" src="https://github.com/user-attachments/assets/0ab049e8-6370-4048-8c7a-897c3e381871" />
+
 
 A sophisticated, AI-powered cryptocurrency trading bot that leverages natural language processing and NFT-based access control to provide automated trading strategies across multiple blockchain networks.
 
