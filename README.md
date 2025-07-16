@@ -215,11 +215,11 @@ curl -X POST "http://localhost:8000/trade/prompt" \
   -H "Content-Type: application/json" \
   -d '{"prompt": "Buy 1 ETH with USDC", "dry_run": false}'
 
-# Sell half of BTC position
+# Sell half of WBTC position
 curl -X POST "http://localhost:8000/trade/prompt" \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"prompt": "Sell 50% of my BTC position", "dry_run": false}'
+  -d '{"prompt": "Sell 50% of my #BTC position", "dry_run": false}'
 ```
 
 ### Strategy Management
