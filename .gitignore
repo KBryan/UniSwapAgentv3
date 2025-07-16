@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Logs and reports
+*.log
+*.err
+coverage/
+.pytest_cache/
+htmlcov/
+
+# Environment variables
+.env
+.env.*
+
+# SQLite database files
+*.sqlite3
+
+# Node.js
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# npm/Yarn logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv local files
+.env.local
+.env.*.local
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Heroku
+.heroku/

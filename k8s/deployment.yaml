@@ -1,0 +1,235 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nft-trading-bot-api
+  labels:
+    app: nft-trading-bot
+    component: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nft-trading-bot
+      component: api
+  template:
+    metadata:
+      labels:
+        app: nft-trading-bot
+        component: api
+    spec:
+      containers:
+      - name: api
+        image: your-registry/nft-trading-bot:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DEBUG
+          value: "false"
+        - name: BYPASS_NFT_GATE
+          value: "false"
+        - name: REAL_DATA_MODE
+          value: "true"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: redis-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: secret-key
+        - name: ETHEREUM_RPC_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: ethereum-rpc-url
+        - name: PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: private-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: anthropic-api-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: openai-api-key
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nft-trading-bot-worker
+  labels:
+    app: nft-trading-bot
+    component: worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nft-trading-bot
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: nft-trading-bot
+        component: worker
+    spec:
+      containers:
+      - name: worker
+        image: your-registry/nft-trading-bot:latest
+        env:
+        - name: DEBUG
+          value: "false"
+        - name: BYPASS_NFT_GATE
+          value: "false"
+        - name: REAL_DATA_MODE
+          value: "true"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: redis-url
+        - name: CELERY_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: redis-url
+        - name: CELERY_RESULT_BACKEND
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: redis-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: secret-key
+        - name: ETHEREUM_RPC_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: ethereum-rpc-url
+        - name: PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: private-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: anthropic-api-key
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: openai-api-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        command: ["celery", "-A", "core.celery_app", "worker", "--loglevel=info", "--concurrency=2"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nft-trading-bot-scheduler
+  labels:
+    app: nft-trading-bot
+    component: scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nft-trading-bot
+      component: scheduler
+  template:
+    metadata:
+      labels:
+        app: nft-trading-bot
+        component: scheduler
+    spec:
+      containers:
+      - name: scheduler
+        image: your-registry/nft-trading-bot:latest
+        env:
+        - name: DEBUG
+          value: "false"
+        - name: BYPASS_NFT_GATE
+          value: "false"
+        - name: REAL_DATA_MODE
+          value: "true"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: database-url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: redis-url
+        - name: CELERY_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: redis-url
+        - name: CELERY_RESULT_BACKEND
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: redis-url
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: nft-trading-bot-secrets
+              key: secret-key
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        command: ["celery", "-A", "core.celery_app", "beat", "--loglevel=info"]
+

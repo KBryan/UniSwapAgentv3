@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nft-trading-bot-api-service
+  labels:
+    app: nft-trading-bot
+    component: api
+spec:
+  selector:
+    app: nft-trading-bot
+    component: api
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nft-trading-bot-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - api.your-domain.com
+    secretName: nft-trading-bot-tls
+  rules:
+  - host: api.your-domain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nft-trading-bot-api-service
+            port:
+              number: 80
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nft-trading-bot-secrets
+type: Opaque
+stringData:
+  database-url: "postgresql://username:password@your-db-host:5432/nft_trading_bot_prod"
+  redis-url: "redis://your-redis-host:6379/0"
+  secret-key: "your-super-secret-production-key-min-32-chars"
+  ethereum-rpc-url: "https://eth-mainnet.g.alchemy.com/v2/your-production-api-key"
+  private-key: "your-production-private-key-with-sufficient-funds"
+  anthropic-api-key: "your-production-anthropic-api-key"
+  openai-api-key: "your-production-openai-api-key"
+  coingecko-api-key: "your-production-coingecko-api-key"
+  twitter-api-key: "your-production-twitter-api-key"
+  twitter-api-secret: "your-production-twitter-api-secret"
+  twitter-access-token: "your-production-twitter-access-token"
+  twitter-access-token-secret: "your-production-twitter-access-token-secret"
+  twitter-bearer-token: "your-production-twitter-bearer-token"
+
