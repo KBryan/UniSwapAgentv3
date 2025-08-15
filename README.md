@@ -410,7 +410,7 @@ pre-commit install
 
 ### Vulnerability Reporting
 
-Report security vulnerabilities to: security@your-domain.com
+Report security vulnerabilities to: kwame.bryan@gmail.com
 
 ## License
 
@@ -422,7 +422,7 @@ For support and questions:
 - **Documentation**: Check this README and API docs
 - **Issues**: Create a GitHub issue
 - **Discord**: Join our Discord community
-- **Email**: support@your-domain.com
+- **Email**: kwame.bryan@gmail.com
 
 ---
 
